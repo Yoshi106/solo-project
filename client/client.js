@@ -6,10 +6,17 @@ const box = document.createElement("div");
 box.classList.add("container");
 document.body.appendChild(box);
 
-const endp = document.createElement("p");
-endp.classList.add("Method");
-endp.innerHTML = "http://localhost:4000/graphql";
-box.appendChild(endp);
+const nextParagraphElement = document.createElement("p");
+nextParagraphElement.classList.add("Method");
+nextParagraphElement.setAttribute("id", "introduction");
+nextParagraphElement.innerHTML =
+  "<a href=https://github.com/Yoshi106/Solo_API_Project>Click here to visit the project!</a>";
+box.appendChild(nextParagraphElement);
+
+// const endp = document.createElement("p");
+// endp.classList.add("Method");
+// endp.innerHTML = "http://localhost:4000/graphql";
+// box.appendChild(endp);
 
 const queries = document.createElement("p");
 queries.classList.add("Method");
@@ -18,7 +25,8 @@ box.appendChild(queries);
 
 const des1 = document.createElement("p");
 des1.classList.add("Des");
-des1.innerHTML = "findMember: Get one member by name<br/>findAllMembers: Get all members<br/>";
+des1.innerHTML =
+  "findMember: Get one member by name<br/>findAllMembers: Get all members<br/>";
 box.appendChild(des1);
 
 const mutations = document.createElement("p");
@@ -28,6 +36,6 @@ box.appendChild(mutations);
 
 const des2 = document.createElement("p");
 des2.classList.add("Des");
-des2.innerHTML = "createMember: Create member<br/>removeMembers: Delete member<br/>modifyGroup: Change group of member by name<br/>";
+des2.innerHTML =
+  "createMember: Create member<br/>removeMembers: Delete member<br/>modifyGroup: Change group of member by name<br/>";
 box.appendChild(des2);
-
