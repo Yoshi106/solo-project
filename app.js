@@ -27,6 +27,7 @@ const typeDefs = gql`
   type Mutation {
     modifyGroup(name: String, group: String): Message
     createMember(input: IpicsInput): Message
+    removeMember(name: String): Message
   }
 `;
 
@@ -58,6 +59,14 @@ resolvers = {
     createMember: async (parent, args) => {
       await knex("ipics").insert(args.input);
       return { msg: "Created!" };
+    },
+    removeMember: async (parent, args) => {
+      await knex("ipics")
+        .where({
+          name: args.name,
+        })
+        .delete();
+      return { msg: "Removed!" };
     },
   },
 };
