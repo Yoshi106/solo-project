@@ -5,13 +5,13 @@ const { ApolloServer } = require("apollo-server");
 // const data = require("./data");
 
 const typeDefs = gql`
-  type Ipics {
+  type Member {
     id: Int
     name: String
     group: String
   }
 
-  input IpicsInput {
+  input MemberInput {
     id: Int!
     name: String!
     group: String!
@@ -22,32 +22,41 @@ const typeDefs = gql`
   }
 
   type Query {
-    ipics(name: String): Ipics
+    findMember(name: String): Member
+    findAllMembers: [Member]
   }
   type Mutation {
     modifyGroup(name: String, group: String): Message
-    createMember(input: IpicsInput): Message
+    createMember(input: MemberInput): Message
     removeMember(name: String): Message
   }
 `;
 
 resolvers = {
   Query: {
-    ipics: (parent, args) => {
+    findMember: (parent, args) => {
       return knex
         .select()
-        .table("ipics")
+        .table("company")
         .then((members) => {
           let output;
           [output] = members.filter((member) => member.name === args.name);
           return output;
         });
     },
+    findAllMembers: (parent, args) => {
+      return knex
+        .select()
+        .table("company")
+        .then((members) => {
+          return members;
+        });
+    },
   },
 
   Mutation: {
     modifyGroup: async (parent, args) => {
-      await knex("ipics")
+      await knex("company")
         .where({
           name: args.name,
         })
@@ -57,11 +66,11 @@ resolvers = {
       return { msg: "Updated!" };
     },
     createMember: async (parent, args) => {
-      await knex("ipics").insert(args.input);
+      await knex("company").insert(args.input);
       return { msg: "Created!" };
     },
     removeMember: async (parent, args) => {
-      await knex("ipics")
+      await knex("company")
         .where({
           name: args.name,
         })
@@ -79,16 +88,12 @@ server.listen(PORT, () => {
   );
 });
 
-// const express = require("express");
+const express = require("express");
 
-// const app = express();
+const app = express();
 
-// app.use(express.static("./"));
+app.use(express.static("./client/"));
 
-// app.get("/hello", (_, res) => {
-//   res.send("Hello");
-// });
-
-// app.listen(5000, () => {
-//   console.log("litening @ 5000");
-// });
+app.listen(5000, () => {
+  console.log("litening @ 5000");
+});
