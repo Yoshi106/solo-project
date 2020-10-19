@@ -11,8 +11,22 @@ const typeDefs = gql`
     group: String
   }
 
+  input IpicsInput {
+    id: Int!
+    name: String!
+    group: String!
+  }
+
+  type Message {
+    msg: String
+  }
+
   type Query {
     ipics(name: String): Ipics
+  }
+  type Mutation {
+    modifyGroup(name: String, group: String): Message
+    createMember(input: IpicsInput): Message
   }
 `;
 
@@ -25,38 +39,27 @@ resolvers = {
         .then((members) => {
           let output;
           [output] = members.filter((member) => member.name === args.name);
-          console.log(output);
           return output;
         });
     },
   },
 
-  // Mutation: {
-  //   createPokemon: (parent, args) => {
-  //     data.pokemon.push(args.input);
-  //     return { msg: `${args.input.name} Created Successfully!` };
-  //   },
-  //   modifyPokemon: (parent, args) => {
-  //     let targetPoke = data.pokemon[args.input.id - 1];
-  //     for (let key in args.input) {
-  //       if (targetPoke[key] !== args.input[key] && key !== "id") {
-  //         targetPoke[key] = args.input[key];
-  //       }
-  //     }
-  //     return { msg: `Pokemon id:${args.input.id} is modified!` };
-  //   },
-  //   modifyAttacks: (parent, args) => {
-  //     let targetType = Object.keys(data.attacks).find(
-  //       (attackType) => attackType === args.modification
-  //     );
-  //     // for (let key in args.input) {
-  //     //   if (targetPoke[key] !== args.input[key] && key !== "id") {
-  //     //     targetPoke[key] = args.input[key];
-  //     //   }
-  //     // }
-  //     return { msg: `Pokemon id:${args.input.id} is modified!` };
-  //   },
-  // },
+  Mutation: {
+    modifyGroup: async (parent, args) => {
+      await knex("ipics")
+        .where({
+          name: args.name,
+        })
+        .update({
+          group: args.group,
+        });
+      return { msg: "Updated!" };
+    },
+    createMember: async (parent, args) => {
+      await knex("ipics").insert(args.input);
+      return { msg: "Created!" };
+    },
+  },
 };
 
 const server = new ApolloServer({ typeDefs, resolvers });
